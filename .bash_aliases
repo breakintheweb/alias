@@ -13,22 +13,22 @@ esc=$(printf '\033') # universal esc char
 
 # function to add aliases to this file
 # usage: aliadd aliasname "alias description" command
-function aliadd() {  
-	if [ -f ~/.bash_aliases ]; then
-		echo "# $2" >> ~/.bash_aliases
-   		echo "alias $1='${@:3}'" >> ~/.bash_aliases
-  		source ~/.bash_aliases;  #reload bashrc  
-		echo "Added alias:";
-		alias $1; #show added command
-  	fi
-	}
+function aliadd() {
+        if [ -f ~/.bash_aliases ]; then
+                echo "# $2" >> ~/.bash_aliases
+                echo "alias $1='${@:3}'" >> ~/.bash_aliases
+                source ~/.bash_aliases;  #reload bashrc
+                echo "Added alias:";
+                alias $1; #show added command
+        fi
+        }
 
 # colorize ip
 alias ip='ip --color'
 alias ipb='ip --color --brief'
 
 # expand anything
-alias xx="atool -x"   
+alias xx="atool -x"
 
 #tophist
 alias bashtop="history | sed -e 's/ *[0-9][0-9]* *//' | sort | uniq -c | sort -rn | head -10"
@@ -45,6 +45,9 @@ alias disks='df -ha |\
 
 # Search process by name and highlight !
 function psgrep() { ps axuf | grep -v grep | grep "$@" -i --color=auto; }
+
+# spawn shell on docker given the containerid
+function dockersh() { docker exec -ti  "$@" /bin/bash; }
 
 # Git logging in color
 alias glog="git log -n 15 --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
@@ -63,19 +66,19 @@ alias netopen='netstat -nape --inet'
 # TCP
 alias netlisten='lsof -Panl -i tcp -i udp |\
                  sed -e "s_\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}_\x1b[33m&\x1b[0m_" |\
-                 sed -e "s_:.* _${esc}${teal}&${esc}${default}_" |\ 
-		sed -e "s_(ESTABLISHED)_\x1b[31m&\x1b[0m_" |\
-		sed -e "s_UDP_${esc}${lblue}&${esc}${default}_"  | sed -e "s_TCP_${esc}${purple}&${esc}${default}_"'
+                sed -e "s_(ESTABLISHED)_\x1b[31m&\x1b[0m_" |\
+                sed -e "s_UDP_${esc}${lblue}&${esc}${default}_"  |\
+                sed -e "s_TCP_${esc}${purple}&${esc}${default}_"'
 
 
 #ovs show with color
 alias ovs='ovs-vsctl show |\
- 		sed -e "s_Bridge.*_\x1b[31m&\x1b[0m_" |\
-		sed -e "s_Port.*_${esc}${lblue}&${esc}${default}_"'
+                sed -e "s_Bridge.*_\x1b[31m&\x1b[0m_" |\
+                sed -e "s_Port.*_${esc}${lblue}&${esc}${default}_"'
 
 alias ovs-ptb='ovs-vsctl port-to-br'
 # Exclude rfc1918
-function notrfc1918 () { 
+function notrfc1918 () {
   grep -vE --color=never '(127|192\.168|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.*)' "$@"
 }
 # Include rfc1918
